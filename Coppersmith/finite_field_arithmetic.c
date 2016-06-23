@@ -93,11 +93,12 @@ bi_poly * shift_left(bi_poly * bp, int shift)
 
     for (i = a - 1; i >= 0; i--)
     {
-        for (j = 31; j >= 0; j--)
+        if ((bp->coeff[i] & 4294967295u))
         {
-            if ((bp->coeff[i] & bits[j]))
+            for (j = 31; j >= 0; j--)
             {
-                ret->coeff[(shift + j + (i << 5)) >> 5] ^= bits[(shift + j) & 31];
+                if ((bp->coeff[i] & bits[j]))
+                   ret->coeff[(shift + j + (i << 5)) >> 5] ^= bits[(shift + j) & 31];
             }
         }
     }
@@ -272,67 +273,56 @@ void reduce(ffa * gf, bi_poly * p)
     update_degree(p);
 }
 
-bi_poly * reduce2(bi_poly * p, bi_poly * q)
+void reduce2(bi_poly * p, bi_poly * q)
 {
     int i, j, k;
-    bi_poly * r = copy_poly(p);
 
-    if (p->deg < q->deg)
-        return r;
+    if (p->deg < q->deg) return;
 
     for (k = p->deg - q->deg; k >= 0; k--)
     {
-        if ((r->coeff[(q->deg + k) >> 5] & bits[(q->deg + k) & 31]))
+        if ((p->coeff[(q->deg + k) >> 5] & bits[(q->deg + k) & 31]))
         {
             for (j = q->deg + k - 1; j >= k; j--)
             {
                 if ((q->coeff[(j - k) >> 5] & bits[(j - k) & 31]))
                 {
-                    r->coeff[j >> 5] ^= bits[j & 31];
+                    p->coeff[j >> 5] ^= bits[j & 31];
                 }
             }
         }
     }
 
-    r->deg = 0;
+    p->deg = 0;
 
     for (i = q->deg - 1; i >= 0; i--)
     {
-        if ((r->coeff[i >> 5] & bits[i & 31]))
+        if ((p->coeff[i >> 5] & bits[i & 31]))
         {
-            r->deg = i;
+            p->deg = i;
             break;
         }
     }
 
-    i = r->deg + 1;
-    r->sz = (i & 31) ? (i >> 5) + 1 : (i >> 5);
-    r->coeff = (ui *) realloc(r->coeff, r->sz * sizeof(ui));
+    i = p->deg + 1;
+    p->sz = (i & 31) ? (i >> 5) + 1 : (i >> 5);
+    p->coeff = (ui *) realloc(p->coeff, p->sz * sizeof(ui));
 
-    if ((r->deg & 31) != 31)
-        r->coeff[r->sz - 1] &= (bits[(r->deg & 31) + 1] - 1u);
-
-    return r;
+    if ((p->deg & 31) != 31)
+        p->coeff[p->sz - 1] &= (bits[(p->deg & 31) + 1] - 1u);
 }
 
 bi_poly * formal_derivative(bi_poly * p)
 {
     int i, j;
-    bi_poly * r = copy_poly(p);
+    bi_poly * r = init_poly(p->sz);
 
-    for (i = 0; i < r->sz; i++)
+    for (i = 0; i < p->sz; i++)
     {
-        for (j = 0; j < 32; j++)
+        for (j = 1; j < 32; j+=2)
         {
-            if ((r->coeff[i] & bits[j]))
-            {
-                if ((j & 1))
-                {
-                    r->coeff[((i << 5) + j - 1) >> 5] ^= bits[(j - 1) & 31];
-                }
-
-                r->coeff[i] ^= bits[j];
-            }
+            if ((p->coeff[i] & bits[j]))
+                r->coeff[((i << 5) + j - 1) >> 5] ^= bits[(j - 1) & 31];
         }
     }
 
@@ -350,14 +340,8 @@ bool smooth(ffa * gf, bi_poly * p)
     {
         tmp = q;
         q = multiply(tmp, gf->factors[i]);
-        //show_poly(tmp);
-        //show_poly(gf->factors[i]);
         free_poly(tmp);
-        //show_poly(q);
-        tmp = q;
-        //show_poly(tmp);
-        q = reduce2(tmp, p);
-        free_poly(tmp);
+        reduce2(q, p);
 
         if (q->deg == 0 && (q->coeff[0] & 1) == 0)
         {

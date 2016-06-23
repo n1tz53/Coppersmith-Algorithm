@@ -3,6 +3,10 @@
 #include <math.h>
 #include "common.h"
 
+extern const ui b[] = {0x2, 0xC, 0xF0, 0xFF00, 0xFFFF0000};
+
+extern const ui s[] = {1u, 2u, 4u, 8u, 16u};
+
 bi_poly * init_poly(int size)
 {
     bi_poly * ret = (bi_poly *) malloc(sizeof(bi_poly));
@@ -39,7 +43,6 @@ bi_poly * copy_poly(bi_poly * bp)
 
     for (i = 0; i < bp->sz; i++)
     {
-        //printf("%d %d\n", i, bp->coeff[i]);
         ret->coeff[i] = bp->coeff[i];
     }
 
@@ -61,15 +64,19 @@ void update_degree(bi_poly * bp)
 
     if(i >= 0)
     {
-        for (j = 31; j >= 0; j--)
+        ui tmp = bp->coeff[i];
+        register ui r = 0;
+
+        for (j = 4; j >= 0; j--)
         {
-            if ((bp->coeff[i] & bits[j]) > 0)
+            if (tmp & b[j])
             {
-                bp->deg = i * 32 + j;
-                break;
+                tmp >>= s[j];
+                r |= s[j];
             }
         }
 
+        bp->deg = (i << 5) +  r;
         j = bp->deg + 1;
         j = (j & 31) ? (j >> 5) + 1 : (j >> 5);
     }

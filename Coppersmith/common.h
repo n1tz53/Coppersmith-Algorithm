@@ -6,6 +6,10 @@ typedef unsigned int ui;
 
 extern const ui bits[32];
 
+extern const ui b[5];
+
+extern const ui s[5];
+
 typedef enum {true = 1, false = 0} bool;
 
 typedef struct
@@ -57,7 +61,7 @@ bi_poly * gcd(bi_poly * a, bi_poly * b);
 
 void reduce(ffa * gf, bi_poly * p);
 
-bi_poly * reduce2(bi_poly * p, bi_poly * q);
+void reduce2(bi_poly * p, bi_poly * q);
 
 bi_poly * formal_derivative(bi_poly * p);
 
