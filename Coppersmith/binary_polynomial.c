@@ -77,8 +77,7 @@ void update_degree(bi_poly * bp)
         }
 
         bp->deg = (i << 5) +  r;
-        j = bp->deg + 1;
-        j = (j & 31) ? (j >> 5) + 1 : (j >> 5);
+        j = get_size(bp->deg + 1);
     }
     else j = 1;
 

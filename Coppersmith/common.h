@@ -26,6 +26,10 @@ bi_poly * copy_poly(bi_poly * bp);
 
 inline void flip_coeff(bi_poly * bp, int n);
 
+inline int get_size(int n);
+
+inline void free_poly(bi_poly * bp);
+
 void update_degree(bi_poly * bp);
 
 void show_poly(bi_poly * bp);

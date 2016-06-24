@@ -15,18 +15,17 @@ extern const ui bits[] =
 
 
 
+inline int get_size(int n) { return (n & 31) ? (n >> 5) + 1 : (n >> 5); }
+
 ffa * init_ffa(int * coeff, int len)
 {
     int i, j;
     ffa * gf = (ffa *) malloc(sizeof(ffa));
     gf->WORD_SIZE = 32;
     gf->m = coeff[len - 1];
-    i = gf-> m + 1;
-    gf->t = (i & 31) ? (i >> 5) + 1 : (i >> 5);
+    gf->t = get_size(gf->m + 1);
     gf->fx = (bi_poly *) create_poly(gf->t, coeff, len);
-    i = coeff[len - 2] + 1;
-    i = (i & 31) ? (i >> 5) + 1 : (i >> 5);
-    gf->rx = (bi_poly *) create_poly(i, coeff, len - 1);
+    gf->rx = (bi_poly *) create_poly(get_size(coeff[len - 2] + 1), coeff, len - 1);
     gf->td = (int *) malloc((1 << 8) * sizeof(int));
     gf->ux = (bi_poly **) malloc(32 * sizeof(bi_poly *));
     gf->factors = (bi_poly **) malloc(13 * sizeof(bi_poly *));
@@ -47,9 +46,7 @@ ffa * init_ffa(int * coeff, int len)
 
     for (i = 1; i < 13; i++)
     {
-        j = (1 << i) + 1;
-        j = (j & 31) ? (j >> 5) + 1 : (j >> 5);
-        gf->factors[i] = init_poly(j);
+        gf->factors[i] = init_poly(get_size((1 << i) + 1));
         flip_coeff(gf->factors[i], 1);
         flip_coeff(gf->factors[i], 1 << i);
         gf->factors[i]->deg = (1 << i);
@@ -85,8 +82,7 @@ bi_poly * shift_left(bi_poly * bp, int shift)
 {
     int a = bp->sz, b, i, j;
     bi_poly * ret;
-    b = (bp->deg + shift + 1);
-    b = (b & 31) ? (b >> 5) + 1 : (b >> 5);
+    b = get_size(bp->deg + shift + 1);
 
     if (b > a) { ret = init_poly(b); }
     else { ret = init_poly(a); }
@@ -137,9 +133,7 @@ bi_poly * add(bi_poly * p, bi_poly * q)
 bi_poly * multiply(bi_poly * p, bi_poly * q)
 {
     int i, j, k;
-    i = (p->deg + q->deg + 1);
-    i = (i & 31) ? (i >> 5) + 1 : (i >> 5);
-    bi_poly * ret = init_poly(i);
+    bi_poly * ret = init_poly(get_size(p->deg + q->deg + 1));
     bi_poly * b = copy_poly(q), * tmp;
 
     for (k = 0; k < 32; k++)
@@ -170,11 +164,8 @@ bi_poly * multiply(bi_poly * p, bi_poly * q)
 
 bi_poly * sqr(ffa * gf, bi_poly * p)
 {
-    int i;
-    ui num;
-    i = (p->deg << 1) + 1;
-    i = (i & 31) ? (i >> 5) + 1 : (i >> 5);
-    bi_poly * ret = init_poly(i);
+    int i; ui num;
+    bi_poly * ret = init_poly(get_size((p->deg << 1) + 1));
 
     for (i = 0; i < p->sz; i++)
     {
@@ -275,7 +266,7 @@ void reduce(ffa * gf, bi_poly * p)
 
 void reduce2(bi_poly * p, bi_poly * q)
 {
-    int i, j, k;
+    int j, k;
 
     if (p->deg < q->deg) return;
 
