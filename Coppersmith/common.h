@@ -1,6 +1,5 @@
 #ifndef COMMON_H_INCLUDED
 #define COMMON_H_INCLUDED
-#define MARK  printf("here\n");
 
 typedef unsigned int ui;
 
@@ -25,7 +24,7 @@ bi_poly * create_poly(int size, int * ary, int len);
 
 bi_poly * copy_poly(bi_poly * bp);
 
-void flip_coeff(bi_poly * bp, int n);
+inline void flip_coeff(bi_poly * bp, int n);
 
 void update_degree(bi_poly * bp);
 

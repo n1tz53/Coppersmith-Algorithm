@@ -49,7 +49,7 @@ bi_poly * copy_poly(bi_poly * bp)
     return ret;
 }
 
-void flip_coeff(bi_poly * bp, int n)
+inline void flip_coeff(bi_poly * bp, int n)
 {
     bp->coeff[n >> 5] ^= bits[n & 31];
 }
@@ -118,7 +118,7 @@ void show_poly(bi_poly * bp)
     printf("\n");
 }
 
-void * free_poly(bi_poly * bp)
+inline void free_poly(bi_poly * bp)
 {
     free(bp->coeff);
     free(bp);

@@ -6,11 +6,11 @@
 
 extern const ui bits[] =
 
-            { 1u << 0, 1u << 1, 1u << 2, 1u << 3, 1u << 4,
-              1u << 5, 1u << 6, 1u << 7, 1u << 8,
-              1u << 9, 1u << 10, 1u << 11, 1u << 12, 1u << 13, 1u << 14, 1u << 15,
-              1u << 16, 1u << 17, 1u << 18, 1u << 19, 1u << 20, 1u << 21, 1u << 22, 1u << 23,
-              1u << 24, 1u << 25, 1u << 26, 1u << 27, 1u << 28, 1u << 29, 1u << 30, 1u << 31
+            { 1u << 0, 1u << 1, 1u << 2, 1u << 3, 1u << 4, 1u << 5, 1u << 6, 1u << 7,
+              1u << 8, 1u << 9, 1u << 10, 1u << 11, 1u << 12, 1u << 13, 1u << 14,
+              1u << 15, 1u << 16, 1u << 17, 1u << 18, 1u << 19, 1u << 20, 1u << 21,
+              1u << 22, 1u << 23, 1u << 24, 1u << 25, 1u << 26, 1u << 27, 1u << 28,
+              1u << 29, 1u << 30, 1u << 31
             };
 
 
@@ -283,6 +283,8 @@ void reduce2(bi_poly * p, bi_poly * q)
     {
         if ((p->coeff[(q->deg + k) >> 5] & bits[(q->deg + k) & 31]))
         {
+            p->coeff[(q->deg + k) >> 5] ^= bits[(q->deg + k) & 31];
+
             for (j = q->deg + k - 1; j >= k; j--)
             {
                 if ((q->coeff[(j - k) >> 5] & bits[(j - k) & 31]))
@@ -293,23 +295,7 @@ void reduce2(bi_poly * p, bi_poly * q)
         }
     }
 
-    p->deg = 0;
-
-    for (i = q->deg - 1; i >= 0; i--)
-    {
-        if ((p->coeff[i >> 5] & bits[i & 31]))
-        {
-            p->deg = i;
-            break;
-        }
-    }
-
-    i = p->deg + 1;
-    p->sz = (i & 31) ? (i >> 5) + 1 : (i >> 5);
-    p->coeff = (ui *) realloc(p->coeff, p->sz * sizeof(ui));
-
-    if ((p->deg & 31) != 31)
-        p->coeff[p->sz - 1] &= (bits[(p->deg & 31) + 1] - 1u);
+    update_degree(p);
 }
 
 bi_poly * formal_derivative(bi_poly * p)

@@ -19,65 +19,17 @@ void test_binary_polynomial()
         }
 
         update_degree(elt[i]);
-
- /*       show_poly(elt[i]);
-
-        if (elt[i]->deg > 10)
-        {
-            printf("made some mistake !!! %d", i);
-        }
-*/
-
     }
 
     int a[3] = {0, 1, 127};
     ffa* gf = init_ffa(a, 3);
 
- /*   show_poly(gf->fx);
-
-    show_poly(gf->rx);
-
-    for (i = 0; i < 32; i++)
-        show_poly(gf->ux[i]);
-
-    for (i = 1; i < 13; i++)
-        show_poly(gf->factors[i]);
-*/
     bi_poly * w1_x, * w2_x, * d, * tmp, * sw1_x;
+    int b[1] = {128};
+    w1_x = create_poly(5, b, 1);
 
     clock_t begin = clock(), end;
     int ctr = 0;
-
-  /*  for (i = 0; i < (1 << 11); i++)
-    {
-        //show_poly(elt[i]);
-        tmp = shift_left(elt[i], 32);
-        //show_poly(tmp);
-        w1_x = sqr(gf, tmp);
-        //show_poly(w1_x);
-        free_poly(tmp);
-        tmp = sqr(gf, w1_x);
-        //show_poly(tmp);
-        free_poly(w1_x);
-        d = copy_poly(tmp);
-        reduce(gf, tmp);
-        //show_poly(tmp);
-        w1_x = reduce2(d, gf->fx);
-        //show_poly(w1_x);
-
-        if (! same(tmp, w1_x))
-        {
-            printf("Error !!!\n");
-            //show_poly(elt[i]);
-            //show_poly(tmp);
-            //show_poly(w1_x);
-            //int hey = 1 / 0;
-        }
-
-        free_poly(tmp);
-        free_poly(d);
-        free_poly(w1_x);
-    } */
 
     for (i = 1; i < (1 << 11); i++)
     {
@@ -96,13 +48,10 @@ void test_binary_polynomial()
 
                 if (smooth(gf, w1_x))
                 {
-                    //printf("%d\n", ++ctr);
-                    //show_poly(w1_x);
                     tmp = sqr(gf, w1_x);
                     w2_x = sqr(gf, tmp);
                     free_poly(tmp);
                     reduce(gf, w2_x);
-                    //show_poly(w2_x);
 
                     if (smooth(gf, w2_x))
                     {
