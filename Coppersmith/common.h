@@ -46,6 +46,7 @@ typedef struct
 
     bi_poly ** ux;
     bi_poly ** factors;
+
 } ffa;
 
 ffa * init_ffa(int * coeff, int len);
@@ -68,6 +69,46 @@ void reduce2(bi_poly * p, bi_poly * q);
 
 bi_poly * formal_derivative(bi_poly * p);
 
+bi_poly * quotient(bi_poly * p, bi_poly * q);
+
+bi_poly * raise(ffa * gf, bi_poly * p, int pow);
+
 bool smooth(ffa * gf, bi_poly * p);
+
+struct factor
+{
+    bi_poly * divisor;
+    int idx;
+    struct factor * nxt;
+
+};
+
+typedef struct factor factor;
+
+typedef struct
+{
+    factor * head;
+    factor * tail;
+    int size;
+
+} factor_list;
+
+factor * init_factor(bi_poly * bp, int n);
+
+void free_factor(factor * fact);
+
+factor_list * init_factor_list();
+
+void add_factor(factor_list * fact_list, factor * fact);
+
+void append(factor_list * fact_list, factor_list * toappend);
+
+void free_factor_list(factor_list * fact_list);
+
+factor_list * sff(bi_poly * p);
+
+factor_list * ddf(ffa * gf, bi_poly * p);
+
+bi_poly ** berlekamp(bi_poly * p);
 
 #endif // COMMON_H_INCLUDED

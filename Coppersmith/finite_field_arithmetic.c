@@ -219,15 +219,9 @@ bi_poly * gcd(bi_poly * a, bi_poly * b)
         g = shift_left(g2, j);
         h = shift_left(h2, j);
 
-        tmp = u;
-        u = add(tmp, d);
-        free_poly(tmp);
-        tmp = g1;
-        g1 = add(tmp, g);
-        free_poly(tmp);
-        tmp = h1;
-        h1 = add(tmp, h);
-        free_poly(tmp);
+        tmp = u; u = add(tmp, d); free_poly(tmp);
+        tmp = g1; g1 = add(tmp, g); free_poly(tmp);
+        tmp = h1; h1 = add(tmp, h); free_poly(tmp);
 
         free_poly(d);
         free_poly(g);
@@ -341,11 +335,76 @@ bool same(bi_poly * p, bi_poly * q)
 
     for (i = 0; i < p->sz; i++)
     {
-        if ((p->coeff[i] ^ q->coeff[i]) != 0) return false;
+        if ((p->coeff[i] ^ q->coeff[i])) return false;
     }
 
     return true;
 }
+
+bi_poly * sqrt(bi_poly * p)
+{
+    int i;
+    bi_poly * r = init_poly(p->sz);
+
+    for (i = 0; i <= p->deg; i += 2)
+    {
+        if (p->coeff[i >> 5] & bits[i & 31])
+            r->coeff[(i >> 1) >> 5] ^= bits[(i >> 1) & 31];
+    }
+
+    update_degree(r);
+
+    return r;
+}
+
+bi_poly * quotient(bi_poly * p, bi_poly * q)
+{
+    int j, k;
+    bi_poly * rem = copy_poly(p);
+    bi_poly * quo = init_poly(get_size(p->deg - q->deg + 1));
+
+    for (k = p->deg - q->deg; k >= 0; k--)
+    {
+        if (rem->coeff[(q->deg + k) >> 5] & bits[(q->deg + k) & 31])
+        {
+            quo->coeff[k >> 5] ^= bits[k & 31];
+
+            for (j = q->deg + k - 1; j >= k; j--)
+            {
+                if (q->coeff[(j - k) >> 5] & bits[(j - k) & 31])
+                {
+                    rem->coeff[j >> 5] ^= bits[j & 31];
+                }
+            }
+        }
+    }
+
+    free_poly(rem);
+    update_degree(quo);
+
+    return quo;
+}
+
+bi_poly * raise(ffa * gf, bi_poly * p, int pow)
+{
+    int i;
+    bi_poly * r = copy_poly(p), * tmp;
+
+    for (i = 1; i < pow; i++)
+    {
+        tmp = r;
+        r = multiply(tmp, p);
+        free_poly(tmp);
+
+        if (r->deg >= gf->m)
+        {
+            reduce(gf, r);
+        }
+    }
+
+    return r;
+}
+
 
 
 
