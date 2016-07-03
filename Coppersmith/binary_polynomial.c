@@ -3,9 +3,9 @@
 #include <math.h>
 #include "common.h"
 
-extern const ui b[] = {0x2, 0xC, 0xF0, 0xFF00, 0xFFFF0000};
+extern const u_int32 b[] = {0x2, 0xC, 0xF0, 0xFF00, 0xFFFF0000};
 
-extern const ui s[] = {1u, 2u, 4u, 8u, 16u};
+extern const u_int32 s[] = {1u, 2u, 4u, 8u, 16u};
 
 /* allocate memory for binary polynomial */
 
@@ -14,7 +14,7 @@ bi_poly * init_poly(int size)
     bi_poly * ret = (bi_poly *) malloc(sizeof(bi_poly));
     ret->deg = 0;
     ret->sz = size;
-    ret->coeff = (ui *) calloc(size, sizeof(ui));
+    ret->coeff = (u_int32 *) calloc(size, sizeof(u_int32));
 
     if (ret->coeff == NULL)
     {
@@ -77,8 +77,8 @@ void update_degree(bi_poly * bp)
 
     if(i >= 0)
     {
-        ui tmp = bp->coeff[i];
-        register ui r = 0;
+        u_int32 tmp = bp->coeff[i];
+        register u_int32 r = 0;
 
         for (j = 4; j >= 0; j--)
         {
@@ -97,7 +97,7 @@ void update_degree(bi_poly * bp)
     if (j < bp->sz)
     {
         bp->sz = j;
-        bp->coeff = (ui *) realloc(bp->coeff, bp->sz * sizeof(ui));
+        bp->coeff = (u_int32 *) realloc(bp->coeff, bp->sz * sizeof(u_int32));
     }
 }
 

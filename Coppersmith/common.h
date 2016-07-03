@@ -1,13 +1,13 @@
 #ifndef COMMON_H_INCLUDED
 #define COMMON_H_INCLUDED
 
-typedef unsigned int ui;
+typedef unsigned int u_int32;
 
-extern const ui bits[32];
+extern const u_int32 bits[32];
 
-extern const ui b[5];
+extern const u_int32 b[5];
 
-extern const ui s[5];
+extern const u_int32 s[5];
 
 typedef enum {true = 1, false = 0} bool;
 
@@ -17,7 +17,7 @@ typedef struct
 {
     int deg;
     int sz;
-    ui * coeff;
+    u_int32 * coeff;
 
 } bi_poly;
 

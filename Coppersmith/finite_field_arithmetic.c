@@ -4,7 +4,7 @@
 
 
 
-extern const ui bits[] =
+extern const u_int32 bits[] =
 
             { 1u << 0, 1u << 1, 1u << 2, 1u << 3, 1u << 4, 1u << 5, 1u << 6, 1u << 7,
               1u << 8, 1u << 9, 1u << 10, 1u << 11, 1u << 12, 1u << 13, 1u << 14,
@@ -177,7 +177,7 @@ bi_poly * multiply(bi_poly * p, bi_poly * q)
 
 bi_poly * sqr(ffa * gf, bi_poly * p)
 {
-    int i; ui num;
+    int i; u_int32 num;
     bi_poly * ret = init_poly(get_size((p->deg << 1) + 1));
 
     for (i = 0; i < p->sz; i++)
