@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include "common.h"
 
+/* compute square free factorization of given polynomial */
+
 factor_list * sff(bi_poly * p)
 {
     int i = 1;
@@ -30,7 +32,7 @@ factor_list * sff(bi_poly * p)
         if (u->deg || (u->coeff[0] & 1) == 0)
         {
             tmp = u;
-            u = sqrt(tmp);
+            u = sqroot(tmp);
             free_poly(tmp);
             factor_list * part = sff(u);
             free_poly(u);
@@ -43,7 +45,7 @@ factor_list * sff(bi_poly * p)
     }
     else
     {
-        tmp = sqrt(p);
+        tmp = sqroot(p);
         factor_list * part = sff(tmp);
         free_poly(tmp);
         factor * itr;
@@ -55,6 +57,8 @@ factor_list * sff(bi_poly * p)
 
     return ret;
 }
+
+/* compute distinct degree factorization of given polynomial */
 
 factor_list * ddf(ffa * gf, bi_poly * p)
 {
@@ -106,6 +110,8 @@ void show_matrix(int ** a, int size)
         printf("\n");
     }
 }
+
+/* Null Space algorithm for binary matrix */
 
 int ** null_space(int ** A, int size)
 {
@@ -160,6 +166,11 @@ int ** null_space(int ** A, int size)
 
     return ret;
 }
+
+/*
+   Berlekamp algorithm for calculating factor of polynomial
+   over finite field
+*/
 
 bi_poly ** berlekamp(bi_poly * p)
 {

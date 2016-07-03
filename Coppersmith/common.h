@@ -11,11 +11,14 @@ extern const ui s[5];
 
 typedef enum {true = 1, false = 0} bool;
 
+/* stucture for binary polynomial */
+
 typedef struct
 {
     int deg;
     int sz;
     ui * coeff;
+
 } bi_poly;
 
 bi_poly * init_poly(int size);
@@ -34,6 +37,7 @@ void update_degree(bi_poly * bp);
 
 void show_poly(bi_poly * bp);
 
+/* stucture for parameter of field $GF(2^n)$ */
 
 typedef struct
 {
@@ -75,6 +79,8 @@ bi_poly * raise(ffa * gf, bi_poly * p, int pow);
 
 bool smooth(ffa * gf, bi_poly * p);
 
+/* stucture for factor of binary polynomial */
+
 struct factor
 {
     bi_poly * divisor;
@@ -84,6 +90,8 @@ struct factor
 };
 
 typedef struct factor factor;
+
+/* list of factors */
 
 typedef struct
 {

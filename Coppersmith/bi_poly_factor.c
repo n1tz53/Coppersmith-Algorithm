@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include "common.h"
 
+/* allocating memory for factor */
+
 factor * init_factor(bi_poly * bp, int n)
 {
     factor * fact = (factor *) malloc(sizeof(factor));
@@ -11,11 +13,15 @@ factor * init_factor(bi_poly * bp, int n)
     return fact;
 }
 
+/* free memory used by factor */
+
 void free_factor(factor * fact)
 {
     free_poly(fact->divisor);
     free(fact);
 }
+
+/* allocating memory for list of factors */
 
 factor_list * init_factor_list()
 {
@@ -27,6 +33,8 @@ factor_list * init_factor_list()
     return fact_list;
 }
 
+/* adding given factor to given list of factors */
+
 void add_factor(factor_list * fact_list, factor * fact)
 {
     if (fact_list->size)
@@ -37,6 +45,8 @@ void add_factor(factor_list * fact_list, factor * fact)
     }
     else { fact_list->head = fact_list->tail = fact; fact_list->size = 1; }
 }
+
+/* appending given list of factors to given list of factors */
 
 void append(factor_list * fact_list, factor_list * toappend)
 {
@@ -59,6 +69,8 @@ void append(factor_list * fact_list, factor_list * toappend)
     toappend->head = toappend->tail = NULL;
     free(toappend);
 }
+
+/* free memory used by factor list */
 
 void free_factor_list(factor_list * fact_list)
 {

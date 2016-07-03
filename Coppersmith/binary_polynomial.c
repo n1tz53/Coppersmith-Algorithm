@@ -7,6 +7,8 @@ extern const ui b[] = {0x2, 0xC, 0xF0, 0xFF00, 0xFFFF0000};
 
 extern const ui s[] = {1u, 2u, 4u, 8u, 16u};
 
+/* allocate memory for binary polynomial */
+
 bi_poly * init_poly(int size)
 {
     bi_poly * ret = (bi_poly *) malloc(sizeof(bi_poly));
@@ -22,6 +24,11 @@ bi_poly * init_poly(int size)
     return ret;
 }
 
+/*
+   create binary polynomial with non-zero coefficient passed
+   as an array
+*/
+
 bi_poly * create_poly(int size, int * ary, int len)
 {
     int i;
@@ -34,6 +41,8 @@ bi_poly * create_poly(int size, int * ary, int len)
 
     return ret;
 }
+
+/* make a copy of given polynomial */
 
 bi_poly * copy_poly(bi_poly * bp)
 {
@@ -49,10 +58,14 @@ bi_poly * copy_poly(bi_poly * bp)
     return ret;
 }
 
+/* flip nth-coefficient of */
+
 inline void flip_coeff(bi_poly * bp, int n)
 {
     bp->coeff[n >> 5] ^= bits[n & 31];
 }
+
+/* update degree of given polynomial */
 
 void update_degree(bi_poly * bp)
 {
@@ -60,7 +73,7 @@ void update_degree(bi_poly * bp)
     bp->deg = 0;
 
     for (i = bp->sz - 1; i >= 0; i--)
-        if ((bp->coeff[i] & 4294967295u)) break;
+        if (bp->coeff[i]) break;
 
     if(i >= 0)
     {
@@ -87,6 +100,8 @@ void update_degree(bi_poly * bp)
         bp->coeff = (ui *) realloc(bp->coeff, bp->sz * sizeof(ui));
     }
 }
+
+/* display polynomial on screen */
 
 void show_poly(bi_poly * bp)
 {
@@ -116,6 +131,8 @@ void show_poly(bi_poly * bp)
     printf(" %d %d ", bp->deg, bp->sz);
     printf("\n");
 }
+
+/* free the memory allocated by the binary polynomial */
 
 inline void free_poly(bi_poly * bp)
 {

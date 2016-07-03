@@ -17,6 +17,11 @@ extern const ui bits[] =
 
 inline int get_size(int n) { return (n & 31) ? (n >> 5) + 1 : (n >> 5); }
 
+/*
+   allocate memory to store parameter for
+   field $GF(2^n)$
+*/
+
 ffa * init_ffa(int * coeff, int len)
 {
     int i, j;
@@ -55,6 +60,8 @@ ffa * init_ffa(int * coeff, int len)
     return gf;
 }
 
+/* free memory allocated by parameters of $GF(2^n)$ */
+
 void free_ffa(ffa * gf)
 {
     int i;
@@ -77,6 +84,7 @@ void free_ffa(ffa * gf)
 }
 
 
+/* multiply given binary polynomial by $x^shift$ */
 
 bi_poly * shift_left(bi_poly * bp, int shift)
 {
@@ -89,7 +97,7 @@ bi_poly * shift_left(bi_poly * bp, int shift)
 
     for (i = a - 1; i >= 0; i--)
     {
-        if ((bp->coeff[i] & 4294967295u))
+        if (bp->coeff[i])
         {
             for (j = 31; j >= 0; j--)
             {
@@ -103,6 +111,8 @@ bi_poly * shift_left(bi_poly * bp, int shift)
 
     return ret;
 }
+
+/* add to binary polynomial */
 
 bi_poly * add(bi_poly * p, bi_poly * q)
 {
@@ -129,6 +139,7 @@ bi_poly * add(bi_poly * p, bi_poly * q)
     return ret;
 }
 
+/* multiply two binary polynomials */
 
 bi_poly * multiply(bi_poly * p, bi_poly * q)
 {
@@ -162,6 +173,8 @@ bi_poly * multiply(bi_poly * p, bi_poly * q)
     return ret;
 }
 
+/* square given binary polynomial */
+
 bi_poly * sqr(ffa * gf, bi_poly * p)
 {
     int i; ui num;
@@ -187,6 +200,8 @@ bi_poly * sqr(ffa * gf, bi_poly * p)
 
     return ret;
 }
+
+/* calculate greatest common divisor of two binary polynomial */
 
 bi_poly * gcd(bi_poly * a, bi_poly * b)
 {
@@ -237,6 +252,8 @@ bi_poly * gcd(bi_poly * a, bi_poly * b)
     return v;
 }
 
+/* reduce given binary polynomial to element of $GF(2^n)$ */
+
 void reduce(ffa * gf, bi_poly * p)
 {
     int i, j, k, l;
@@ -257,6 +274,8 @@ void reduce(ffa * gf, bi_poly * p)
 
     update_degree(p);
 }
+
+/* return binary polynomial $p$ modulo $q$ */
 
 void reduce2(bi_poly * p, bi_poly * q)
 {
@@ -283,6 +302,8 @@ void reduce2(bi_poly * p, bi_poly * q)
     update_degree(p);
 }
 
+/* calculate formal derivative of binary polynomial over GF(2) */
+
 bi_poly * formal_derivative(bi_poly * p)
 {
     int i, j;
@@ -301,6 +322,8 @@ bi_poly * formal_derivative(bi_poly * p)
 
     return r;
 }
+
+/* check binary polynomial for smoothness */
 
 bool smooth(ffa * gf, bi_poly * p)
 {
@@ -326,6 +349,8 @@ bool smooth(ffa * gf, bi_poly * p)
     return false;
 }
 
+/* compare if two binary polynomials are same */
+
 bool same(bi_poly * p, bi_poly * q)
 {
     int i;
@@ -341,7 +366,12 @@ bool same(bi_poly * p, bi_poly * q)
     return true;
 }
 
-bi_poly * sqrt(bi_poly * p)
+/*
+   calculate square root of given binary polynomial,
+   assuming it is a perfect square
+*/
+
+bi_poly * sqroot(bi_poly * p)
 {
     int i;
     bi_poly * r = init_poly(p->sz);
@@ -356,6 +386,8 @@ bi_poly * sqrt(bi_poly * p)
 
     return r;
 }
+
+/* return quotient polynomial of $p$ divide by $q$ */
 
 bi_poly * quotient(bi_poly * p, bi_poly * q)
 {
@@ -384,6 +416,8 @@ bi_poly * quotient(bi_poly * p, bi_poly * q)
 
     return quo;
 }
+
+/* raise binary polynomial $p$ to $pow$ */
 
 bi_poly * raise(ffa * gf, bi_poly * p, int pow)
 {
