@@ -60,7 +60,7 @@ factor_list * sff(bi_poly * p)
 
 /* compute distinct degree factorization of given polynomial */
 
-factor_list * ddf(ffa * gf, bi_poly * p)
+factor_list * ddf(bfa * gf, bi_poly * p)
 {
     int i = 1;
     factor_list * ret = init_factor_list();

@@ -22,10 +22,10 @@ inline int get_size(int n) { return (n & 31) ? (n >> 5) + 1 : (n >> 5); }
    field $GF(2^n)$
 */
 
-ffa * init_ffa(int * coeff, int len)
+bfa * init_bfa(int * coeff, int len)
 {
     int i, j;
-    ffa * gf = (ffa *) malloc(sizeof(ffa));
+    bfa * gf = (bfa *) malloc(sizeof(bfa));
     gf->WORD_SIZE = 32;
     gf->m = coeff[len - 1];
     gf->t = get_size(gf->m + 1);
@@ -49,20 +49,30 @@ ffa * init_ffa(int * coeff, int len)
         }
     }
 
-    for (i = 1; i < 13; i++)
+    return gf;
+}
+
+/* compute parameter related to smoothness bound */
+
+void smooth_parameter(bfa * gf, int bd)
+{
+    int i, j;
+    gf->bound = bd;
+
+    for (i = 1; i <= gf->bound; i++)
     {
-        gf->factors[i] = init_poly(get_size((1 << i) + 1));
+        j = 1 << i;
+        gf->factors[i] = init_poly(get_size(j + 1));
         flip_coeff(gf->factors[i], 1);
-        flip_coeff(gf->factors[i], 1 << i);
-        gf->factors[i]->deg = (1 << i);
+        flip_coeff(gf->factors[i], j);
+        gf->factors[i]->deg = j;
     }
 
-    return gf;
 }
 
 /* free memory allocated by parameters of $GF(2^n)$ */
 
-void free_ffa(ffa * gf)
+void free_bfa(bfa * gf)
 {
     int i;
 
@@ -175,7 +185,7 @@ bi_poly * multiply(bi_poly * p, bi_poly * q)
 
 /* square given binary polynomial */
 
-bi_poly * sqr(ffa * gf, bi_poly * p)
+bi_poly * sqr(bfa * gf, bi_poly * p)
 {
     int i; u_int32 num;
     bi_poly * ret = init_poly(get_size((p->deg << 1) + 1));
@@ -254,7 +264,7 @@ bi_poly * gcd(bi_poly * a, bi_poly * b)
 
 /* reduce given binary polynomial to element of $GF(2^n)$ */
 
-void reduce(ffa * gf, bi_poly * p)
+void reduce(bfa * gf, bi_poly * p)
 {
     int i, j, k, l;
 
@@ -325,12 +335,13 @@ bi_poly * formal_derivative(bi_poly * p)
 
 /* check binary polynomial for smoothness */
 
-bool smooth(ffa * gf, bi_poly * p)
+bool smooth(bfa * gf, bi_poly * p)
 {
-    int i;
+    int i, j = gf->bound >> 1;
     bi_poly * q = formal_derivative(p), * tmp;
+    if (gf->bound & 1) ++j;
 
-    for (i = 6; i <= 12; i++)
+    for (i = j; i <= gf->bound; i++)
     {
         tmp = q;
         q = multiply(tmp, gf->factors[i]);
@@ -419,7 +430,7 @@ bi_poly * quotient(bi_poly * p, bi_poly * q)
 
 /* raise binary polynomial $p$ to $pow$ */
 
-bi_poly * raise(ffa * gf, bi_poly * p, int pow)
+bi_poly * raise(bfa * gf, bi_poly * p, int pow)
 {
     int i;
     bi_poly * r = copy_poly(p), * tmp;

@@ -22,7 +22,7 @@ void test_binary_polynomial()
     }
 
     int a[3] = {0, 1, 127};
-    ffa* gf = init_ffa(a, 3);
+    bfa* gf = init_bfa(a, 3);
 
     bi_poly * w1_x, * w2_x, * d, * tmp, * sw1_x;
     int b[1] = {128};
@@ -75,7 +75,7 @@ void test_binary_polynomial()
 
     free(elt);
 
-    free_ffa(gf);
+    free_bfa(gf);
 
     end = clock() - begin;
     int msec = end * 1000 / CLOCKS_PER_SEC;
@@ -132,7 +132,8 @@ void test_sieve()
     fp = fopen("poly_to_factor.txt", "w");
 
     int a[3] = {0, 1, 127};
-    ffa* gf = init_ffa(a, 3);
+    bfa* gf = init_bfa(a, 3);
+    smooth_parameter(gf, 12);
 
     int avg;
     int ctr = 0, k;
@@ -209,7 +210,7 @@ void test_factorization()
 
     int a[3] = {0, 1, 127};
     int b[7] = {0, 1, 2, 3, 4, 5, 6};
-    ffa* gf = init_ffa(a, 3);
+    bfa* gf = init_bfa(a, 3);
 
 
     while (fgets(buffer, 1024, fp) != NULL)
@@ -296,39 +297,12 @@ void test_factorization()
 
     fclose(fp);
 
-    free_ffa(gf);
+    free_bfa(gf);
 }
-/*
-u_int32 modulo (u_int32, px, u_int32 qx)
-{
-
-}
-
-void generate_primes()
-{
-    u_int32 i, j;
-    FILE * fp = fopen("irreducible.txt", "w");
-    char * irred = (char *) calloc((1 << 24) * sizeof(char));
-    irred[2] = irred[3] = 1;
-
-    for (i = 5; i < (1 << 24); i+=2)
-    {
-        irred[i] = 1;
-
-        for (j = i - 1; j >= 2; j--)
-        {
-            if (! modulo(i, j))
-            {
-                irred[i] = 0;
-                break;
-            }
-        }
-    }
-} */
 
 int main()
 {
-    printf("Hello World\n");
+    printf("Collect Potential u1x and u2x pair : \n");
     test_sieve();
     return 0;
 }

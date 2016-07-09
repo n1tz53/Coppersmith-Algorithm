@@ -44,6 +44,7 @@ typedef struct
     int WORD_SIZE;
     int m, t;
     int * td;
+    int bound;             /* smoothness bound */
 
     bi_poly * fx;
     bi_poly * rx;
@@ -51,11 +52,13 @@ typedef struct
     bi_poly ** ux;
     bi_poly ** factors;
 
-} ffa;
+} bfa;
 
-ffa * init_ffa(int * coeff, int len);
+bfa * init_bfa(int * coeff, int len);
 
-void free_ffa(ffa * gf);
+void smooth_parameter(bfa * gf, int bd);
+
+void free_bfa(bfa * gf);
 
 bi_poly * shift_left(bi_poly * bp, int shift);
 
@@ -63,11 +66,11 @@ bi_poly * add(bi_poly * p, bi_poly * q);
 
 bi_poly * multiply(bi_poly * p, bi_poly * q);
 
-bi_poly * sqr(ffa * gf, bi_poly * p);
+bi_poly * sqr(bfa * gf, bi_poly * p);
 
 bi_poly * gcd(bi_poly * a, bi_poly * b);
 
-void reduce(ffa * gf, bi_poly * p);
+void reduce(bfa * gf, bi_poly * p);
 
 void reduce2(bi_poly * p, bi_poly * q);
 
@@ -75,9 +78,9 @@ bi_poly * formal_derivative(bi_poly * p);
 
 bi_poly * quotient(bi_poly * p, bi_poly * q);
 
-bi_poly * raise(ffa * gf, bi_poly * p, int pow);
+bi_poly * raise(bfa * gf, bi_poly * p, int pow);
 
-bool smooth(ffa * gf, bi_poly * p);
+bool smooth(bfa * gf, bi_poly * p);
 
 /* stucture for factor of binary polynomial */
 
@@ -115,7 +118,7 @@ void free_factor_list(factor_list * fact_list);
 
 factor_list * sff(bi_poly * p);
 
-factor_list * ddf(ffa * gf, bi_poly * p);
+factor_list * ddf(bfa * gf, bi_poly * p);
 
 bi_poly ** berlekamp(bi_poly * p);
 
