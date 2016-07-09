@@ -6,14 +6,15 @@ inline int max(int a, int b) { return (a >= b) ? a : b; }
 
 int get_lowest_bit(int n)
 {
-    int i;
-    for (i = 0; i < 32; i++)
-    {
-        if (n & bits[i])
-            return i;
-    }
-
-    return 0;
+    int c = 32;
+    n &= -n;
+    if (n) c--;
+    if (n & 0x0000FFFF) c -= 16;
+    if (n & 0x00FF00FF) c -= 8;
+    if (n & 0x0F0F0F0F) c -= 4;
+    if (n & 0x33333333) c -= 2;
+    if (n & 0x55555555) c -= 1;
+    return c;
 }
 
 void gen_irred()

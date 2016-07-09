@@ -100,7 +100,7 @@ void test_sieve()
         fgets(buffer, sizeof(buffer), fp);
         irred[i]->deg = (int) strtoul(buffer, &rem, 10);
         ++rem;
-        irred[i]->coeff[0] = (ui) atoi(rem);
+        irred[i]->coeff[0] = (u_int32) atoi(rem);
 
         if (irred[i]->deg != deg)
         {
@@ -169,6 +169,7 @@ void test_sieve()
 
                     if (smooth(gf, w2x))
                     {
+                        printf("%d\n", ++ctr);
                         fprintf(fp, "%d %d", w1x->deg, w1x->sz);
                         for (k = 0; k < w1x->sz; k++)
                             fprintf(fp, " %d", w1x->coeff[k]);
@@ -225,7 +226,7 @@ void test_factorization()
         {
             rem = nxt;
             ++rem;
-            px->coeff[i] = (ui) strtoul(rem, &nxt, 10);
+            px->coeff[i] = (u_int32) strtoul(rem, &nxt, 10);
         }
 
         //px = create_poly(1, b, 7);
@@ -297,11 +298,37 @@ void test_factorization()
 
     free_ffa(gf);
 }
+/*
+u_int32 modulo (u_int32, px, u_int32 qx)
+{
+
+}
+
+void generate_primes()
+{
+    u_int32 i, j;
+    FILE * fp = fopen("irreducible.txt", "w");
+    char * irred = (char *) calloc((1 << 24) * sizeof(char));
+    irred[2] = irred[3] = 1;
+
+    for (i = 5; i < (1 << 24); i+=2)
+    {
+        irred[i] = 1;
+
+        for (j = i - 1; j >= 2; j--)
+        {
+            if (! modulo(i, j))
+            {
+                irred[i] = 0;
+                break;
+            }
+        }
+    }
+} */
 
 int main()
 {
-    printf("Checking Square Free Factorization : \n");
-    test_factorization();
-
+    printf("Hello World\n");
+    test_sieve();
     return 0;
 }
